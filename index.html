@@ -1,28 +1,21 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en" dir="ltr">
   <head>
-    <title>Tutoring organization</title>
+    <meta charset="utf-8">
+    <title></title>
     <link rel="stylesheet" href="styles.css">
-    <meta charset="utf-8" />
+
   </head>
   <body>
 
+    <!-- outside table that contains two schedules -->
 
-
-      <table style= "border:0;width:100%">
-        <tr>
-          <td colspan="2" style= "border:0">
-          <table style= "border:0;width:100%">
-            <td style= "border: 0;width:50%" ><h1>Tutors:</h1></td>
-            <td style= "border: 0;width:50%"><h1>Students:</h1></td>
-          </table>
-        </td>
-        </tr>
+    <table style= "border: 0">
       <tr>
       <td style= "border: 0">
-
       <!-- tutors schedule -->
-      <table style="width:100%">
+      <table>
         <tr>
           <th>Block</th>
           <th>Day 1</th>
@@ -153,7 +146,7 @@
         </td>
         <!-- tutees schedule -->
         <td style= "border: 0">
-          <table style="width:100%">
+          <table>
             <tr>
               <th>Block</th>
               <th>Day 1</th>
@@ -286,957 +279,128 @@
 
     <!-- second row of the table for information, is changed on click -->
       <tr>
-        <td  style= "border: 0">
-          <h2 id="Tname"></h2>
-          <p id="Tgrade"></p>
-          <p id="Tsubjects"></p>
-          <p id="Temail"></p>
-          <p id="Tavailiable"></p>
-          <p id="Tnotes"></p>
-
-        </td>
-        <td  style= "border: 0">
-          <h2 id="Sname"></h2>
-          <p id="Sgrade"></p>
-          <p id="Ssubjects"></p>
-          <p id="Semail"></p>
-          <p id="Savailiable"></p>
-          <p id="Snotes"></p>
-        </td>
-
+        <table>
+          <td  style= "border: 0">
+            <h2 id="Tname"></h2>
+            <p id="Tgrade"></p>
+            <p id="Tsubjects"></p>
+            <p id="Temail"></p>
+          </td>
+          <td  style= "border: 0">
+            <h2 id="Sname"></h2>
+            <p id="Sgrade"></p>
+            <p id="Ssubjects"></p>
+            <p id="Semail"></p>
+          </td>
+        </table>
       </tr>
     </table>
 
 
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button type-"button" id="authorize_button">Authorize</button>
-    <button type-"button" id="signout_button">Sign Out</button>
 
 
 
-    <script type="text/javascript">
-    var tdictOfInfo = {}
-    var sdictOfInfo = {}
 
-      // Client ID and API key from the Developer Console
-      var CLIENT_ID = '144153718774-bnorlf1g21kd8il9unjo6ic6e1tegjno.apps.googleusercontent.com';
-      var API_KEY = 'AIzaSyC1vesZgyHejcjn6wL-HQcyfwQKdyoJrOI';
 
-      // Array of API discovery doc URLs for APIs used by the quickstart
-      var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+<script type="text/javascript">
+// use javascript to access google forms api and create dictionary with info from each result
 
-      // Authorization scopes required by the API; multiple scopes can be
-      // included, separated by spaces.
-      var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+  // var form =FormApp.openByUrl('https://docs.google.com/forms/d/1ZfntY3qGsfyZR-l1HMafeoDTSEAPJ025AD3zgoxJJcs/edit');
+  // console.lof(form)
+  // dict of tutor information
+  var tdictOfInfo = {
+    "TE 560723": {"name": "Samuel Everson", "grade": "12", "subjects": "math", "email": "samuel@everson.ws", "blocks": {"1":"1b", "6":"3b"}},
+    "BE 248521": {"name": "Benjamin Everson", "grade": "10", "subjects": "math", "email": "benjamin@everson.ws", "blocks": {"4":"1a", "9":"3b"}}
+  }
+  // dict of student information
+  var sdictOfInfo = {
+    "SE 826594": {"name": "Samuel Everson", "grade": "12", "subjects": "math", "email": "samuel@everson.ws", "blocks": {"8":"4a", "6":"4b"}}
+  }
 
-      var authorizeButton = document.getElementById('authorize_button');
-      var signoutButton = document.getElementById('signout_button');
+  // for each tutor make their name a button that shows info on click
+  for (var tkey in tdictOfInfo){
+    console.log("hi")
+     for (var tblockKey in tdictOfInfo[tkey]["blocks"]){
 
-      /**
-       *  On load, called to load the auth2 library and API client library.
-       */
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-      }
+          // loop through all blocks of all tutors and add their name schedule
 
-      /**
-       *  Initializes the API client library and sets up sign-in state
-       *  listeners.
-       */
-      function initClient() {
-        gapi.client.init({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          discoveryDocs: DISCOVERY_DOCS,
-          scope: SCOPES
-        }).then(function () {
-          // Listen for sign-in state changes.
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
-          // Handle the initial sign-in state.
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-          authorizeButton.onclick = handleAuthClick;
-          signoutButton.onclick = handleSignoutClick;
-        }, function(error) {
-          appendPre(JSON.stringify(error, null, 2));
-        });
-      }
+          const tblockCode = tblockKey+tdictOfInfo[tkey]["blocks"][tblockKey]+"t"
+          // console.log(tblockKey)
+          // console.log(tdictOfInfo[tkey]["blocks"][tblockKey])
+          console.log(tblockKey+tdictOfInfo[tkey]["blocks"][tblockKey]+"t")
+          document.getElementById(tblockCode).innerHTML = tkey.split(" ")[0];
 
-      /**
-       *  Called when the signed in status changes, to update the UI
-       *  appropriately. After a sign-in, the API is called.
-       */
-      function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-          authorizeButton.style.display = 'none';
-          signoutButton.style.display = 'block';
-          tgetData();
-          sgetData();
-        } else {
-          authorizeButton.style.display = 'block';
-          signoutButton.style.display = 'none';
-        }
-      }
+          console.log(Math.random())
 
-      /**
-       *  Sign in the user upon button click.
-       */
-      function handleAuthClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-      }
+    const ttag =document.getElementById(tblockCode);
+    // console.log(ttag);
+    // // console.log(tdictOfInfo);
+    // // console.log(tkey)
+    // // console.log(tdictOfInfo[tkey])
+    // // console.log(document.getElementsByClassName("BE"));
+    taddClick(ttag)
+    function taddClick(tnameButt){
+      tnameButt.addEventListener("click", tupdateInfo);;}
+      const name = tdictOfInfo[tkey]["name"];
+      const grade = tdictOfInfo[tkey]["grade"];
+      const subjects = tdictOfInfo[tkey]["subjects"];
+      const email = tdictOfInfo[tkey]["email"];
 
-      /**
-       *  Sign out the user upon button click.
-       */
-      function handleSignoutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-      }
+    function tupdateInfo() {
+      // console.log(tdictOfInfo[tkey])
+      // console.log(tkey)
 
-      /**
-       * Append a pre element to the body containing the given message
-       * as its text node. Used to display the results of the API call.
-       *
-       * @param {string} message Text to be placed in pre element.
-       */
-      function appendPre(message) {
-        var pre = document.getElementById('content');
-        console.log(pre)
-        var textContent = document.createTextNode(message + '\n');
-        console.log(textContent)
-        pre.appendChild(textContent);
-      }
+    document.getElementById("Tname").innerHTML = "Name: "+ name;
+    document.getElementById("Tgrade").innerHTML = "Grade: "+ grade;
+    document.getElementById("Tsubjects").innerHTML = "Subjects: "+ subjects;
+    document.getElementById("Temail").innerHTML = "Email: "+ email;
+    }
+  }}
 
-      /**
-       * Print the names and majors of students in a sample spreadsheet:
-       * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-       */
-      function tgetData() {
-        gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '10RxnPoN6-yVEFtbLv93HaLnJRHLX1uGoZhu7LWT2-gk',
-          range: 'Form Responses 1!A1:I',
-        }).then(function(response) {
-          var range = response.result;
-          // console.log(range.values)
-          // console.log(range.values.length)
-          for (let step = 0; step < range.values.length; step++) {
-            var notesCheck = false
-            if (step != 0) {
-              var value_list = range.values[step]
-              // console.log(value_list);
-              var stepCounter = 0
-              for (let stepTwo = 0; stepTwo < range.values[step].length; stepTwo++) {
+  // for each student make their name a button that shows info on click
+  for (var key in sdictOfInfo){
+    for (var blockKey in sdictOfInfo[key]["blocks"]){
 
-                if (stepTwo != 0) {
-                  var value = range.values[step][stepTwo]
-                  };//end of if statement that deals with timestamp
-                  // console.log(value)
-                if (stepTwo == 1) {
-                  stepCounter+=1
-                  var initials = ""
-                  var fullName = value
-                  var listFirstLast = range.values[step][stepTwo].split(" ")
+         // loop through all blocks of all tutors and add their name schedule
 
-                  var count = listFirstLast.length;
-                  for (var num = 0; num < count; num++) {
-                    // console.log(listFirstLast[num])
-                    var firstLetter = listFirstLast[num].split("")[0]
-                    // console.log(firstLetter)
-                    initials += firstLetter
 
-                  }//end of for loop that goes through first and last name
+         const blockCode = blockKey+sdictOfInfo[key]["blocks"][blockKey]+"s"
+         // console.log(blockKey+sdictOfInfo[key]["blocks"][blockKey]+"s")
+         document.getElementById(blockCode).innerHTML = key.split(" ")[0];
 
-                  // console.log(initials)
-                  //add random number to initials to create unique CODE
-                  initials += " "
-                  initials += Math.random()
-                  // console.log(initials)
-                  const initialsConst = initials
 
-                }//end of if statement that deals with name
-                if (stepTwo == 2) {
-                  var grade = value
 
-                }// end of if statement that deals with the grade
+    const tag=document.getElementById(blockCode);
+    // console.log(tags);
+    // console.log(document.getElementsByClassName("BE"));
 
-                if (stepTwo == 3) {
-                  try {
-                    blockDict={}
-                    var blocks = value;
-                    var blockList = blocks.split(",");
-                    var blockListLen = blockList.length;
-                    for (var n = 0; n < blockListLen; n++) {
+    addClick(tag)
+    // console.log(tag)
 
-                      blockSegs = blockList[n].split(" ")
-                      // console.log(blockSegs)
-                      var blockSegsLen = blockSegs.length;
-                      for (var segNum = 0; segNum < blockSegsLen; segNum++) {
-                        // console.log(blockSegs[segNum])
-                        blockSegs[segNum] = blockSegs[segNum].toLowerCase()
-                        if (!isNaN(Number(blockSegs[segNum]))){//get a number and assume that it is the day
-                          if (blockSegs[segNum] != " ") {
-                            var shouldBlock = blockSegs[segNum+1]
-                            if (!isNaN(parseInt(blockSegs[segNum+1], 10))) {//get the item after the number and assume that its a block
-                              console.log(shouldBlock)
-                              var blockSegment = blockSegs[segNum]
-                              blockSegs[segNum+1]=blockSegs[segNum+1].toLowerCase()
-                              if (typeof(blockDict[blockSegment])== "object") {
-                                blockDict[blockSegment].push(blockSegs[segNum+1].toLowerCase())
-                                // console.log(blockDict)
-                            }//end of if statement that checks if current block segment is already a object
 
-                            if (blockDict[blockSegment] == undefined) {
-                              // console.log(blockSegment)
-                              blockDict[blockSegment] = [blockSegs[segNum+1]]
-                              // console.log(blockDict[blockSegs[segNum+1]])
-                          }//end of if statement that checks if current block segment is undefined
+    function updateInfo() {
+      const name = sdictOfInfo[key]["name"];
+      const grade = sdictOfInfo[key]["grade"];
+      const subjects = sdictOfInfo[key]["subjects"];
+      const email = sdictOfInfo[key]["email"];
+      // console.log("testing3")
+    document.getElementById("Sname").innerHTML = "Name: "+ name;
+    document.getElementById("Sgrade").innerHTML = "Grade: "+ grade;
+    document.getElementById("Ssubjects").innerHTML = "Subjects: "+ subjects;
+    document.getElementById("Semail").innerHTML = "Email: "+ email;
 
-                              // console.log("success")
-                              // console.log(typeof(blockSegment))
-                              // console.log(blockDict)
-                              }//end of if statement that checks for block number after day
-                            // }//end of for loop that loops through next three
+    }
+    updateFunc = updateInfo;
+    function addClick(nameButt){
+      // console.log("testing1")
+      nameButt.addEventListener("click", updateInfo);
+      // console.log("testing2")
+    }
 
+  }}
 
-                          }//end of if statement that deals with empty spaces
+</script>
 
-                        }//end of if loop that filters out non numbers
-                      }//end of for loop that goes through each space separated block value
-
-                    }//end of for loop taht goes through each block input
-                  } catch (e) {
-                    console.log("error")
-                  }
-
-                }//end of if statement that deals with blocks
-
-                if (stepTwo == 4) {
-
-                  var subjects = value
-
-
-                }// end of if statement that deals with subjects
-
-                if (stepTwo == 5) {
-
-                  var email = value
-
-
-                }// end of if statement that deals with email and creates dictionary
-                if (stepTwo==6) {
-
-                  var afterAvailablity = value
-                }//end of if statement that asks if available after school
-                if (stepTwo==7){
-                  notesCheck = true
-                  var notes = value
-                }//end of if statement that checks for Notes
-                if (stepTwo==8) {
-                  var assignList = value.split(",")
-                  console.log(assignList)
-
-                }//end of if statement that checks for assignments
-
-                // console.log(stepTwo)
-                }//end of for loop that goes through data elements in each cell of sheet data
-
-                console.log(notes)
-                tdictOfInfo[initials] ={"name": fullName, "grade": grade, "subjects": subjects, "email": email, "blocks": blockDict, "assign": assignList, "notes":notes, "afterAvailablity": afterAvailablity}
-                const ctdictOfInfo = tdictOfInfo
-                console.log(tdictOfInfo)
-                var notes = "none"
-            }//end of if statement that filters out headers
-
-          }//end of for loop that goes through row elements in sheet data
-          //END OF TGETDATA
-          //START OF TUTOR ADD LABELS TO char
-          // for each tutor make their name a button that shows info on click
-          var tcounter = 0
-                    for (var tkey in tdictOfInfo){
-                      tcounter += 1
-
-                      // console.log("test1")
-                      console.log(tkey)
-
-                       for (var tblockListKey in tdictOfInfo[tkey]["blocks"]){
-                          console.log("test2")
-                          for (var tblockKeyIndex in tdictOfInfo[tkey]["blocks"][tblockListKey]){
-                            console.log(tdictOfInfo[tkey]["blocks"][tblockListKey])
-                            var tblockKey = tdictOfInfo[tkey]["blocks"][tblockListKey][tblockKeyIndex]
-                            // console.log(tblockKey)
-                            // loop through all blocks of all tutors and add their name schedule
-
-
-                            const tblockCode = tblockListKey+tblockKey
-                            // console.log(tblockCode)
-                            if (!isNaN(tblockKey)){
-                              // console.log(tblockListKey+tblockKey+"at")
-
-                                var newTData = document.createElement("td");//this block handles a part of block
-                                newTData.style.cssText="border:none;"
-                                var text = ","+tkey.split(" ")[0]
-                                var newTDataText = document.createTextNode(text);
-                                newTData.appendChild(newTDataText);
-                                var existTd = document.getElementById(tblockCode+"at")
-                                existTd.appendChild(newTData)
-                                var ttag = newTData
-                                // console.log(ttag)
-                                tparams=[ttag,(tblockCode+"at")]
-                                taddClick(tparams)
-
-
-                                var newTData = document.createElement("td");//this block handles a part of block
-                                newTData.style.cssText="border:none;"
-                                var text = ","+tkey.split(" ")[0]
-                                var newTDataText = document.createTextNode(text);
-                                newTData.appendChild(newTDataText);
-                                var existTd = document.getElementById(tblockCode+"bt")
-                                existTd.appendChild(newTData)
-                                var ttag = newTData
-                                // console.log(ttag)
-                                tparams = [ttag,(tblockCode+"bt")]
-                                taddClick(tparams)
-
-
-                            }
-                            if (isNaN(tblockKey)){
-
-                                var newTData = document.createElement("td");
-                                var text = ","+tkey.split(" ")[0]
-                                var newTDataText = document.createTextNode(text);
-                                newTData.appendChild(newTDataText);
-                                newTData.style.cssText="border:none;"
-                                var existTd = document.getElementById(tblockCode+"t")
-                                existTd.appendChild(newTData)
-                                var ttag = newTData
-                                // console.log(ttag)
-                                tparams = [ttag,(tblockCode+"t")]
-                                taddClick(tparams)
-
-
-                              // const ttag =document.getElementById(tblockCode+"t")
-                            }
-
-
-                      // console.log(ttag);
-                      // // console.log(tdictOfInfo);
-                      // // console.log(tkey)
-                      // // console.log(tdictOfInfo[tkey])
-                      // // console.log(document.getElementsByClassName("BE"));
-
-                      function taddClick(tnameButtList){
-                        for (var tnameButt in tnameButtList){
-                        // console.log(tnameButtList[tnameButt])
-                        if (typeof(tnameButtList[tnameButt])=="object"){
-                        tnameButtList[tnameButt].addEventListener("click", tupdateInfo);;
-                        tnameButtList[tnameButt].addEventListener("dblclick", tmakeGray)
-                        }
-
-                        // console.log(tnameButtList[tnameButt])
-
-                        //start of defining update color
-                        const tag = ttag
-
-
-                        function tupdateColor() {
-                          tag.style.cssText = "color:#b6b9d6;border:none;"
-
-                        }
-
-
-                        const tcounterInstance = tcounter+1
-                        function tmakeGray(){
-                          console.log(tag)
-                          // console.log("tmakegray")
-                          if (tag.style.cssText == "color: rgb(182, 185, 214); border: none;"){
-                            // console.log("makeblack")
-                            tag.style.cssText = "border:none;"
-                            //start of remove from spreadsheets
-                            try {
-                            // POST REQUEST TO GOOGLE SHEET
-                            if (typeof(tnameButtList[tnameButt])=="string"){
-                            console.log(tcounterInstance)
-                            var cellToUpdate = "I"+tcounterInstance
-                            var bodyContent = ""
-                            for (var block in tdictOfInfo[tkey]["assign"]) {
-                              if (tdictOfInfo[tkey]["assign"][block] == tnameButtList[tnameButt]){
-                                console.log(tdictOfInfo[tkey]["assign"])
-                                tdictOfInfo[tkey]["assign"].splice(block, 1)
-                                console.log(tdictOfInfo[tkey]["assign"])
-                              }
-                            }
-                            for (var block in tdictOfInfo[tkey]["assign"]){
-                                bodyContent+=","
-                                bodyContent += tdictOfInfo[tkey]["assign"][block]
-                              }
-
-                            console.log(bodyContent)
-                            var body = {
-                              values:[
-                                [bodyContent]
-                              ]
-
-                          }
-                            var range = "I"+tcounterInstance+":I"+tcounterInstance
-                            console.log(range)
-                            console.log("I"+tcounterInstance)
-                            console.log(body)
-
-                            gapi.client.sheets.spreadsheets.values.update({
-                               spreadsheetId: "10RxnPoN6-yVEFtbLv93HaLnJRHLX1uGoZhu7LWT2-gk",
-                               range: range,
-                               valueInputOption: "RAW",
-                               resource: body
-                            }).then((response) => {
-                              var result = response.result;
-                              console.log(`${result.updatedCells} cells updated.`);
-                            });
-                          };
-                          } catch (e) {//end of try block
-                            console.log("error")
-                          }
-
-                          }
-                          else{
-                            try {
-                            // POST REQUEST TO GOOGLE SHEET
-                            if (typeof(tnameButtList[tnameButt])=="string"){
-                            console.log(tcounterInstance)
-                            var cellToUpdate = "I"+tcounterInstance
-                            var bodyContent = ""
-                            if (tdictOfInfo[tkey]["assign"] != undefined){
-                              for (var block in tdictOfInfo[tkey]["assign"]){
-                                bodyContent+=","
-                                bodyContent += tdictOfInfo[tkey]["assign"][block]
-                              }
-                              bodyContent += ","+(tnameButtList[tnameButt]+",")
-                              tdictOfInfo[tkey]["assign"].push(tnameButtList[tnameButt])
-                              }
-                           else{
-                             bodyContent += ","+(tnameButtList[tnameButt]+",")
-                             tdictOfInfo[tkey]["assign"]=[tnameButtList[tnameButt]]
-                           }
-                            console.log(bodyContent)
-                            var bodyValues = [
-                              [(tnameButtList[tnameButt]+",")]
-                            ]
-                            var body = {
-                              values:[
-                                [bodyContent]
-                              ]
-
-                          }
-                            var range = "I"+tcounterInstance+":I"+tcounterInstance
-                            console.log(range)
-                            console.log("I"+tcounterInstance)
-                            console.log(body)
-
-                            gapi.client.sheets.spreadsheets.values.update({
-                               spreadsheetId: "10RxnPoN6-yVEFtbLv93HaLnJRHLX1uGoZhu7LWT2-gk",
-                               range: range,
-                               valueInputOption: "RAW",
-                               resource: body
-                            }).then((response) => {
-                              var result = response.result;
-                              console.log(`${result.updatedCells} cells updated.`);
-                            });
-
-                            //END OF POST REQUEST
-                            }
-                            tupdateColor()
-                          } catch (e) {//end of try block
-                            console.log("error")
-                          }
-                          }
-                        }//end of tmakeGray
-
-                        if (typeof(tnameButtList[tnameButt])=="string"){
-
-                              function checkInList(itemInList){
-                                if (itemInList == tnameButt){
-                                  return tnameButt
-                                  console.log("checking")
-                                }
-                              }
-                             var assignListInfo = tdictOfInfo[tkey]["assign"];
-                             console.log(assignListInfo);
-                             for (var assignBlock in assignListInfo){
-                               console.log(assignListInfo[assignBlock])
-                               console.log(tnameButtList[tnameButt])
-                               if (assignListInfo[assignBlock] == tnameButtList[tnameButt]){
-                                 console.log(assignBlock)
-                                 console.log(tnameButt)
-                                 console.log(tag)
-                                 tupdateColor()
-                                 console.log(tag.style.cssText)
-                               }
-                           }
-
-
-
-                          //write to spreadsheet
-
-                        //end of update color
-                      }//end of checking assign and changing color
-                        }
-                        const name = tdictOfInfo[tkey]["name"];
-                        const grade = tdictOfInfo[tkey]["grade"];
-                        const subjects = tdictOfInfo[tkey]["subjects"];
-                        const email = tdictOfInfo[tkey]["email"];
-                        const notes = tdictOfInfo[tkey]["notes"];
-                        const afterAvailablity = tdictOfInfo[tkey]["afterAvailablity"];
-                        const assignState =tdictOfInfo[tkey]["assign"]
-
-
-                      function tupdateInfo() {
-                        // console.log(tkey)
-
-                      document.getElementById("Tname").innerHTML = "Name: "+ name;
-                      document.getElementById("Tgrade").innerHTML = "Grade: "+ grade;
-                      document.getElementById("Tsubjects").innerHTML = "Subjects: "+ subjects;
-                      document.getElementById("Temail").innerHTML = "Email: "+ email;
-                      document.getElementById("Tnotes").innerHTML = "Other Notes: "+ notes;
-                      document.getElementById("Tavailiable").innerHTML = "Would you tutor after school? "+ afterAvailablity;
-                      // document.getElementById("tassign_button").style.display = "inline-block"
-                      // document.getElementById("tunassign_button").style.display = "inline-block"
-                      // console.log(name)
-
-
-
-                      // console.log(tdictOfInfo[tkey]["assign"])
-                    }//end of tupdateinfo
-                    // console.log(ttag)
-                    //
-                    //
-                    //check if data should be grayed
-
-
-                    // const initialTag = stag
-                    // function updateColor(){
-                    //
-                    // }
-                  }//end of addclick
-                }}
-
-          //END OF TUTOR ADD LABELS
-        }})};//END OF ALL TUTOR RELATED WORK
-
-
-
-
-
-            //START OF SGET DATA
-        function sgetData() {
-          gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: '1QWjpNmbdjDaFtZwZBSDdMRrxa1YYrIBV2c6LguHiOlQ',
-            range: 'Form Responses 1!A1:I',
-          }).then(function(response) {
-            var range = response.result;
-            // console.log(range.values)
-            // console.log(range.values.length)
-            for (let step = 0; step < range.values.length; step++) {
-
-              if (step != 0) {
-                var value_list = range.values[step]
-                // console.log(value_list);
-
-                for (let stepTwo = 0; stepTwo < range.values[step].length; stepTwo++) {
-
-                  if (stepTwo != 0) {
-                    var value = range.values[step][stepTwo]
-                    };//end of if statement that deals with timestamp
-                    // console.log(value)
-                  if (stepTwo == 1) {
-
-                    var initials = ""
-                    var fullName = value
-                    var listFirstLast = range.values[step][stepTwo].split(" ")
-
-                    var count = listFirstLast.length;
-                    for (var num = 0; num < count; num++) {
-                      // console.log(listFirstLast[num])
-                      var firstLetter = listFirstLast[num].split("")[0]
-                      // console.log(firstLetter)
-                      initials += firstLetter
-
-                    }//end of for loop that goes through first and last name
-
-                    // console.log(initials)
-                    //add random number to initials to create unique CODE
-                    initials += " "
-                    initials += Math.random()
-                    // console.log(initials)
-                    const initialsConst = initials
-                    console.log(initialsConst)
-
-                  }//end of if statement that deals with name
-                  if (stepTwo == 2) {
-                    console.log(value)
-                    var grade = value
-
-                  }// end of if statement that deals with the grade
-                  if (stepTwo == 3) {
-                    console.log(value)
-                    // try {
-                      blockDict={}
-                      var blocks = value;
-                      var blockList = blocks.split(",");
-                      var blockListLen = blockList.length;
-                      for (var n = 0; n < blockListLen; n++) {
-
-                        blockSegs = blockList[n].split(" ")
-                        var blockSegsLen = blockSegs.length;
-                        for (var segNum = 0; segNum < blockSegsLen; segNum++) {
-                          // console.log(blockSegs[segNum].toLowerCase())
-                          blockSegs[segNum] = blockSegs[segNum].toLowerCase()
-                          // console.log(blockSegs[segNum])
-                          if (!isNaN(Number(blockSegs[segNum]))){
-                            if (blockSegs[segNum] != " ") {
-                              if (!isNaN(parseInt(blockSegs[segNum+1], 10))){
-                                var blockSegment = blockSegs[segNum]
-                                blockSegs[segNum+1]=blockSegs[segNum+1].toLowerCase()
-                              if (typeof(blockDict[blockSegment])== "object") {
-                                blockDict[blockSegment].push(blockSegs[segNum+1])
-                                // console.log(blockDict)
-                            }//end of if statement that checks if current block segment is already a object
-
-                            if (blockDict[blockSegment] == undefined) {
-                              // console.log(blockSegment)
-                              blockDict[blockSegment] = [blockSegs[segNum+1]]
-                              // console.log(blockDict[blockSegs[segNum+1]])
-                          }//end of if statement that checks if current block segment is undefined
-                                // console.log("success")
-                                // console.log(typeof(blockSegment))
-                                console.log(blockDict);
-
-                              }//end of if statement that checks for block number after day
-
-                            }//end of if statement that deals with empty spaces
-
-                          }//end of if loop that filters out non numbers
-                        }//end of for loop that goes through each space separated block value
-
-                      }//end of for loop that goes through each block input
-                    // } catch (e) {
-                    //   console.log("error")
-                    // }
-
-                  }//end of if statement that deals with blocks
-
-                  if (stepTwo == 4) {
-                    console.log(value)
-                    var subjects = value
-
-                  }// end of if statement that deals with subjects
-
-                  if (stepTwo == 5) {
-                    console.log(value)
-                    var email = value
-                  }// end of if statement that deals with email and makes final dict
-                  if (stepTwo==6) {
-                    console.log(value)
-                    var afterAvailablity = value
-                  }
-                  if (stepTwo==7){
-                    console.log(value)
-                    var notes = value
-                  }
-                  if (stepTwo==8) {
-                    var assignList = value.split(",")
-                    console.log(assignList)
-                  }
-
-                  }//end of for loop that goes through data elements in each cell of sheet data
-                  sdictOfInfo[initials] ={"name": fullName, "grade": grade, "subjects": subjects, "email": email, "blocks": blockDict, "assign": assignList, "notes":notes, "afterAvailablity": afterAvailablity}
-                  const csdictOfInfo = sdictOfInfo
-                  console.log(sdictOfInfo)
-                  var notes = "none"
-              }//end of if statement that filters out headers
-            }//end of for loop that goes through row elements in sheet data
-            //START OF STUDENT ADD LABELS TO table
-            // for each student make their name a button that shows info on click
-            var counter = 0
-            for (var key in sdictOfInfo){
-              counter += 1
-              for (var blockListKey in sdictOfInfo[key]["blocks"]){
-                console.log(sdictOfInfo[key]["blocks"])
-                console.log(blockListKey)//BlockListKey=dayname
-                for (var blockKeyIndex in sdictOfInfo[key]["blocks"][blockListKey]){
-                  console.log(sdictOfInfo[key]["blocks"][blockListKey])
-                  var blockKey = sdictOfInfo[key]["blocks"][blockListKey][blockKeyIndex]
-                  console.log(blockKey)
-                   // loop through all blocks of all tutors and add their name schedule
-
-
-
-                   // console.log(blockKey+sdictOfInfo[key]["blocks"][blockKey]+"s")
-                   const blockCode = blockListKey+blockKey
-                   const grayTag = []
-
-
-                   if (!isNaN(blockKey)){
-                     console.log(blockListKey+blockKey+"as")
-
-                       var newTData = document.createElement("td");//this block handles a part of block
-                       newTData.style.cssText="border:none;"
-                       var text = ","+key.split(" ")[0]
-                       var newTDataText = document.createTextNode(text);
-                       newTData.appendChild(newTDataText);
-                       var existTd = document.getElementById(blockCode+"as")
-                       existTd.appendChild(newTData)
-                       var stag = newTData
-                       console.log(stag)
-                       grayTag.push(stag)
-                       params = [stag,(blockCode+"as")]
-                       addClick(params)
-
-
-                       var newTData = document.createElement("td");//this block handles a part of block
-                       newTData.style.cssText="border:none;"
-                       var text = ","+key.split(" ")[0]
-                       var newTDataText = document.createTextNode(text);
-                       newTData.appendChild(newTDataText);
-                       var existTd = document.getElementById(blockCode+"bs")
-                       existTd.appendChild(newTData)
-                       var stag = newTData
-                       console.log(stag)
-                       grayTag.push(stag)
-                       params = [stag,(blockCode+"bs")]
-                       addClick(params)
-
-
-                   }
-                   if (isNaN(blockKey)){
-                      console.log(blockCode)
-                       var newTData = document.createElement("td");
-                       var text = ","+key.split(" ")[0]
-                       var newTDataText = document.createTextNode(text);
-                       newTData.appendChild(newTDataText);
-                       newTData.style.cssText="border:none;"
-                       var existTd = document.getElementById(blockCode+"s")
-                       console.log(blockCode)
-                       existTd.appendChild(newTData)
-                       var stag = newTData
-                       console.log(stag)
-                       grayTag.push(stag)
-                       params = [stag,(blockCode+"s")]
-                       addClick(params)
-
-
-                     // const ttag =document.getElementById(tblockCode+"t")
-                   }
-
-
-              // const tag=document.getElementById(blockCode);
-              // // console.log(tags);
-              // // console.log(document.getElementsByClassName("BE"));
-              //
-              // addClick(tag)
-              // console.log(tag)
-
-              function addClick(nameButtList){
-                for (var nameButt in nameButtList){
-                // console.log(tnameButtList[tnameButt])
-                if (typeof(nameButtList[nameButt])=="object"){
-                nameButtList[nameButt].addEventListener("click", updateInfo);;
-                nameButtList[nameButt].addEventListener("dblclick", makeGray)
-                }
-
-                // console.log(tnameButtList[tnameButt])
-
-                //start of defining update color
-                const tag = stag
-
-
-                function updateColor() {
-                  tag.style.cssText = "color:#b6b9d6;border:none;"
-
-                }
-
-
-                const counterInstance = counter+1
-                function makeGray(){
-                  console.log(tag)
-                  // console.log("tmakegray")
-                  if (tag.style.cssText == "color: rgb(182, 185, 214); border: none;"){
-                    // console.log("makeblack")
-                    tag.style.cssText = "border:none;"
-                    //start of remove from spreadsheet
-                    // POST REQUEST TO GOOGLE SHEET
-                    if (typeof(nameButtList[nameButt])=="string"){
-                    console.log(counterInstance)
-                    var cellToUpdate = "I"+counterInstance
-                    var bodyContent = ""
-                    for (var block in sdictOfInfo[key]["assign"]) {
-                      if (sdictOfInfo[key]["assign"][block] == nameButtList[nameButt]){
-                        console.log(sdictOfInfo[key]["assign"])
-                        sdictOfInfo[key]["assign"].splice(block, 1)
-                        console.log(sdictOfInfo[key]["assign"])
-                      }
-                    }
-                    for (var block in sdictOfInfo[key]["assign"]){
-                        // bodyContent+=","
-                        bodyContent += sdictOfInfo[key]["assign"][block]
-                      }
-
-                    console.log(bodyContent)
-                    var body = {
-                      values:[
-                        [bodyContent]
-                      ]
-
-                  }
-                    var range = "I"+counterInstance+":I"+counterInstance
-                    console.log(range)
-                    console.log("I"+counterInstance)
-                    console.log(body)
-
-                    gapi.client.sheets.spreadsheets.values.update({
-                       spreadsheetId: "1QWjpNmbdjDaFtZwZBSDdMRrxa1YYrIBV2c6LguHiOlQ",
-                       range: range,
-                       valueInputOption: "RAW",
-                       resource: body
-                    }).then((response) => {
-                      var result = response.result;
-                      console.log(`${result.updatedCells} cells updated.`);
-                    });
-                  };
-
-
-                  }
-                  else{
-                    // try {
-                    // POST REQUEST TO GOOGLE SHEET
-                    if (typeof(nameButtList[nameButt])=="string"){
-                    console.log(counterInstance)
-                    var cellToUpdate = "I"+counterInstance
-                    var bodyContent = ""
-                    if (sdictOfInfo[key]["assign"] != undefined){
-                      for (var block in sdictOfInfo[key]["assign"]){
-                        bodyContent+=","
-                        bodyContent += sdictOfInfo[key]["assign"][block]
-                      }
-                      bodyContent += ","+(nameButtList[nameButt]+",")
-                      sdictOfInfo[key]["assign"].push(nameButtList[nameButt])
-                      }
-                   else{
-                     bodyContent += ","+(nameButtList[nameButt]+",")
-                     sdictOfInfo[key]["assign"]=[nameButtList[nameButt]]
-                   }
-                    console.log(bodyContent)
-                    var bodyValues = [
-                      [(nameButtList[nameButt]+",")]
-                    ]
-                    var body = {
-                      values:[
-                        [bodyContent]
-                      ]
-
-                  }
-                    var range = "I"+counterInstance+":I"+counterInstance
-                    console.log(range)
-                    console.log("I"+counterInstance)
-                    console.log(body)
-
-                    gapi.client.sheets.spreadsheets.values.update({
-                       spreadsheetId: "1QWjpNmbdjDaFtZwZBSDdMRrxa1YYrIBV2c6LguHiOlQ",
-                       range: range,
-                       valueInputOption: "RAW",
-                       resource: body
-                    }).then((response) => {
-                      var result = response.result;
-                      console.log(`${result.updatedCells} cells updated.`);
-                    });
-
-                    //END OF POST REQUEST
-                    }
-                    updateColor()
-                  // } catch (e) {//end of try block
-                  //   console.log("error")
-                  // }
-                  }
-                }//end of tmakeGray
-
-                if (typeof(nameButtList[nameButt])=="string"){
-                      }
-                     var assignListInfo = sdictOfInfo[key]["assign"];
-                     console.log(assignListInfo);
-                     for (var assignBlock in assignListInfo){
-                       console.log(assignListInfo[assignBlock])
-                       console.log(nameButtList[nameButt])
-                       if (assignListInfo[assignBlock] == nameButtList[nameButt]){
-                         console.log(assignBlock)
-                         console.log(nameButt)
-                         console.log(tag)
-                         updateColor()
-                         console.log(tag.style.cssText)
-                       }
-                   }
-
-
-
-                  //write to spreadsheet
-
-                //end of update color
-              }//end of checking assign and changing color
-                }
-                const name = sdictOfInfo[key]["name"];
-                const grade = sdictOfInfo[key]["grade"];
-                const subjects = sdictOfInfo[key]["subjects"];
-                const email = sdictOfInfo[key]["email"];
-                const notes = sdictOfInfo[key]["notes"];
-                const afterAvailablity = sdictOfInfo[key]["afterAvailablity"];
-                const assignState =sdictOfInfo[key]["assign"]
-
-
-              function updateInfo() {
-                // console.log(tkey)
-
-              document.getElementById("Sname").innerHTML = "Name: "+ name;
-              document.getElementById("Sgrade").innerHTML = "Grade: "+ grade;
-              document.getElementById("Ssubjects").innerHTML = "Subjects: "+ subjects;
-              document.getElementById("Semail").innerHTML = "Email: "+ email;
-              document.getElementById("Snotes").innerHTML = "Other Notes: "+ notes;
-              document.getElementById("Savailiable").innerHTML = "Could you be available after School? "+ afterAvailablity;
-              // document.getElementById("tassign_button").style.display = "inline-block"
-              // document.getElementById("tunassign_button").style.display = "inline-block"
-              // console.log(name)
-
-
-
-              // console.log(tdictOfInfo[tkey]["assign"])
-            }//end of tupdateinfo
-            // console.log(ttag)
-            //
-            //
-            //check if data should be grayed
-
-
-            // const initialTag = stag
-            // function updateColor(){
-            //
-            // }
-          }//end of addclick
-            }//end of for loop
-
-
-          }
-
-            //END OF STUDENT ADD LABELS TO TABle
-
-          })};
-
-
-// MY CODE THAT add EXTRA FEATURES TO program
-
-
-
-
-
-    </script>
-
-    <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
   </body>
 </html>
